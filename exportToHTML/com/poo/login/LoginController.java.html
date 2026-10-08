@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>LoginController.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#191a1c">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+LoginController.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">poo</span><span class="s2">.</span><span class="s1">login</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">springframework</span><span class="s2">.</span><span class="s1">beans</span><span class="s2">.</span><span class="s1">factory</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">Autowired</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">springframework</span><span class="s2">.</span><span class="s1">stereotype</span><span class="s2">.</span><span class="s1">Controller</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">springframework</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">Model</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">springframework</span><span class="s2">.</span><span class="s1">web</span><span class="s2">.</span><span class="s1">bind</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">GetMapping</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">springframework</span><span class="s2">.</span><span class="s1">web</span><span class="s2">.</span><span class="s1">bind</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">PostMapping</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">springframework</span><span class="s2">.</span><span class="s1">web</span><span class="s2">.</span><span class="s1">bind</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">RequestParam</span><span class="s2">;</span>
+
+<span class="s1">@Controller</span>
+<span class="s0">public class </span><span class="s1">LoginController </span><span class="s2">{</span>
+
+    <span class="s1">@Autowired</span>
+    <span class="s0">private </span><span class="s1">UsuarioRepository usuarioRepository</span><span class="s2">;</span>
+
+    <span class="s3">// Cuando entras desde el navegador, este método te muestra el HTML del login</span>
+    <span class="s1">@GetMapping</span><span class="s2">(</span><span class="s4">&quot;/login&quot;</span><span class="s2">)</span>
+    <span class="s0">public </span><span class="s1">String mostrarFormularioLogin</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s4">&quot;login&quot;</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// Cuando presionas el botón &quot;Entrar&quot;, este método recibe tus datos y los revisa</span>
+    <span class="s1">@PostMapping</span><span class="s2">(</span><span class="s4">&quot;/login&quot;</span><span class="s2">)</span>
+    <span class="s0">public </span><span class="s1">String procesarLogin</span><span class="s2">(</span><span class="s1">@RequestParam String username</span><span class="s2">,</span>
+                                <span class="s1">@RequestParam String password</span><span class="s2">,</span>
+                                <span class="s1">Model model</span><span class="s2">) {</span>
+
+        <span class="s3">// Busca al usuario en MySQL</span>
+        <span class="s1">Usuario usuario </span><span class="s2">= </span><span class="s1">usuarioRepository</span><span class="s2">.</span><span class="s1">findByUsername</span><span class="s2">(</span><span class="s1">username</span><span class="s2">);</span>
+
+        <span class="s3">// Si lo encuentra y la contraseña es correcta...</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">usuario </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">usuario</span><span class="s2">.</span><span class="s1">getPassword</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">password</span><span class="s2">)) {</span>
+            <span class="s1">model</span><span class="s2">.</span><span class="s1">addAttribute</span><span class="s2">(</span><span class="s4">&quot;nombreUsuario&quot;</span><span class="s2">, </span><span class="s1">usuario</span><span class="s2">.</span><span class="s1">getUsername</span><span class="s2">());</span>
+            <span class="s0">return </span><span class="s4">&quot;welcome&quot;</span><span class="s2">; </span><span class="s3">// Te manda a welcome.html</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s3">// Si te equivocas...</span>
+            <span class="s1">model</span><span class="s2">.</span><span class="s1">addAttribute</span><span class="s2">(</span><span class="s4">&quot;error&quot;</span><span class="s2">, </span><span class="s4">&quot;Usuario o contraseña incorrectos&quot;</span><span class="s2">);</span>
+            <span class="s0">return </span><span class="s4">&quot;login&quot;</span><span class="s2">; </span><span class="s3">// Te regresa a login.html con un mensaje de error</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>
