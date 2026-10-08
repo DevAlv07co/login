@@ -13,29 +13,52 @@ public class LoginController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // Cuando entras desde el navegador, este método te muestra el HTML del login
+    // Muestra el formulario de inicio de sesión
     @GetMapping("/login")
     public String mostrarFormularioLogin() {
         return "login";
     }
 
-    // Cuando presionas el botón "Entrar", este método recibe tus datos y los revisa
+    // Procesa el inicio de sesión
     @PostMapping("/login")
     public String procesarLogin(@RequestParam String username,
                                 @RequestParam String password,
                                 Model model) {
-
-        // Busca al usuario en MySQL
         Usuario usuario = usuarioRepository.findByUsername(username);
 
-        // Si lo encuentra y la contraseña es correcta...
         if (usuario != null && usuario.getPassword().equals(password)) {
             model.addAttribute("nombreUsuario", usuario.getUsername());
-            return "welcome"; // Te manda a welcome.html
+            return "welcome";
         } else {
-            // Si te equivocas...
             model.addAttribute("error", "Usuario o contraseña incorrectos");
-            return "login"; // Te regresa a login.html con un mensaje de error
+            return "login";
         }
+    }
+
+    // NUEVO MÉTODO: Registra un nuevo usuario en la base de datos
+    @PostMapping("/registrar")
+    public String registrarNuevoUsuario(@RequestParam String nuevoUsername,
+                                        @RequestParam String nuevoPassword,
+                                        @RequestParam String usuarioActual,
+                                        Model model) {
+
+        // 1. Verificamos si el nombre ya existe en la base de datos
+        if (usuarioRepository.findByUsername(nuevoUsername) != null) {
+            model.addAttribute("errorRegistro", "El usuario '" + nuevoUsername + "' ya existe.");
+        } else {
+            // 2. Si no existe, creamos el objeto Usuario y lo guardamos
+            Usuario nuevo = new Usuario();
+            nuevo.setUsername(nuevoUsername);
+            nuevo.setPassword(nuevoPassword);
+
+            // Esta línea ejecuta el INSERT INTO en MySQL automáticamente
+            usuarioRepository.save(nuevo);
+
+            model.addAttribute("mensajeExito", "¡Usuario '" + nuevoUsername + "' registrado con éxito!");
+        }
+
+        // Mantenemos el saludo al usuario actual en la pantalla
+        model.addAttribute("nombreUsuario", usuarioActual);
+        return "welcome";
     }
 }

@@ -2,22 +2,48 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Bienvenido</title>
+    <title>Panel de Usuario</title>
     <style>
-        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #e8f5e9; }
-        .welcome-container { background: white; padding: 3rem; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; }
-        .btn-logout { margin-top: 20px; display: inline-block; padding: 10px 20px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 4px; }
-        .btn-logout:hover { background-color: #c82333; }
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background-color: #f0f2f5; }
+        .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 340px; text-align: center; }
+        input { width: 90%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 90%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 15px; font-weight: bold; margin-top: 8px; }
+        button:hover { background-color: #218838; }
+        .btn-login { margin-top: 15px; display: inline-block; padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; }
+        .btn-login:hover { background-color: #0056b3; }
+        .exito { color: #28a745; font-size: 14px; margin-bottom: 8px; font-weight: bold; }
+        .error { color: #dc3545; font-size: 14px; margin-bottom: 8px; font-weight: bold; }
+        hr { margin: 20px 0; border: none; border-top: 1px solid #eee; }
     </style>
 </head>
 <body>
 
-<div class="welcome-container">
-    <!-- Thymeleaf recibe el 'nombreUsuario' desde el Controlador y lo imprime aquí -->
-    <h1>¡Hola, <span th:text="${nombreUsuario}">Usuario</span>!</h1>
+<div class="card">
+    <h2>¡Hola, <span th:text="${nombreUsuario}">Usuario</span>!</h2>
     <p>Has iniciado sesión correctamente.</p>
 
-    <a href="/login" class="btn-logout">Cerrar Sesión</a>
+    <hr>
+
+    <h3>Agregar otro usuario</h3>
+
+    <div th:if="${mensajeExito != null}">
+        <p class="exito" th:text="${mensajeExito}"></p>
+    </div>
+    <div th:if="${errorRegistro != null}">
+        <p class="error" th:text="${errorRegistro}"></p>
+    </div>
+
+    <form action="/registrar" method="post">
+        <input type="hidden" name="usuarioActual" th:value="${nombreUsuario}">
+
+        <input type="text" name="nuevoUsername" placeholder="Nuevo nombre de usuario" required>
+        <input type="password" name="nuevoPassword" placeholder="Nueva contraseña" required>
+        <button type="submit">Guardar en Base de Datos</button>
+    </form>
+
+    <hr>
+
+    <a href="/login" class="btn-login">Cerrar sesión / Probar nuevo usuario</a>
 </div>
 
 </body>
